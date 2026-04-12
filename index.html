@@ -1,1 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amr Assi | System Engineer Lab</title>
+  <meta name="description" content="Enterprise-style home lab by Amr Assi: VMware ESXi, pfSense, Active Directory, PKI, Intune, Azure/Entra, Veeam, IIS, LAPS, and security-focused administration." />
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0a1526;
+      --panel:#0d1b2a;
+      --panel2:#12263a;
+      --line:rgba(255,255,255,.08);
+      --text:#e8eef7;
+      --muted:#93a4b8;
+      --accent:#4cc9f0;
+      --accent2:#7b61ff;
+      --green:#22c55e;
+      --glow:0 14px 40px rgba(76,201,240,.18), 0 10px 30px rgba(123,97,255,.14);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 15%, rgba(76,201,240,.16), transparent 26%),
+        radial-gradient(circle at 90% 10%, rgba(123,97,255,.18), transparent 24%),
+        linear-gradient(180deg, #050d18 0%, var(--bg) 30%, var(--bg2) 100%);
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(var(--max), calc(100% - 32px)); margin:auto}
+    .nav{
+      position:sticky; top:0; z-index:100;
+      background:rgba(7,17,31,.78);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav-inner{
+      display:flex; align-items:center; justify-content:space-between; gap:18px;
+      padding:14px 0;
+    }
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand-badge{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#04111d; font-weight:900;
+      box-shadow:var(--glow);
+    }
+    .brand strong{display:block; font-size:1rem}
+    .brand small{color:var(--muted)}
+    .nav-links{display:flex; gap:14px; flex-wrap:wrap}
+    .nav-links a{
+      color:var(--muted); padding:8px 10px; border-radius:10px; font-size:.95rem;
+      transition:.2s ease;
+    }
+    .nav-links a:hover{color:var(--text); background:rgba(255,255,255,.05)}
+    .hero{padding:76px 0 34px}
+    .hero-grid{
+      display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:stretch;
+    }
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .hero-card{padding:34px}
+    .eyebrow{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 14px; border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      color:#c6d4e2; font-weight:700; font-size:.9rem;
+    }
+    .pulse{
+      width:9px;height:9px;border-radius:50%;background:var(--green);
+      box-shadow:0 0 0 0 rgba(34,197,94,.6); animation:pulse 1.8s infinite;
+    }
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}
+      70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}
+      100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+    }
+    h1{
+      margin:18px 0 12px;
+      font-size:clamp(2.25rem, 5vw, 4.4rem);
+      line-height:1.02;
+      letter-spacing:-1.4px;
+    }
+    .gradient{
+      background:linear-gradient(135deg,#ffffff,#c8efff 45%,#aa9dff 95%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .lead{
+      color:var(--muted);
+      margin:0 0 20px;
+      max-width:68ch; line-height:1.75; font-size:1.05rem;
+    }
+    .hero-actions{display:flex; gap:14px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:13px 18px; border-radius:14px; font-weight:800;
+      transition:.2s ease; border:1px solid var(--line);
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#05111d; border:none; box-shadow:var(--glow);
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .stats{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:22px;
+    }
+    .stat{
+      border-radius:18px; padding:18px; background:rgba(255,255,255,.03); border:1px solid var(--line);
+    }
+    .stat .n{font-weight:900; font-size:1.7rem}
+    .stat .l{margin-top:6px; color:var(--muted); font-size:.9rem}
+    .topology{padding:24px}
+    .topology h3{margin:0 0 8px}
+    .topology p{margin:0 0 18px; color:var(--muted); line-height:1.7}
+    .nodes{display:grid; gap:12px}
+    .node{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      transition:.2s ease;
+    }
+    .node:hover{transform:translateY(-2px); border-color:rgba(76,201,240,.25)}
+    .node strong{display:block; margin-bottom:4px}
+    .node small{color:var(--muted)}
+    .tag{
+      white-space:nowrap;
+      padding:7px 10px; border-radius:999px;
+      font-size:.76rem; font-weight:900;
+      background:rgba(76,201,240,.12); color:#98e7ff;
+      border:1px solid rgba(76,201,240,.18);
+    }
+    section{padding:28px 0}
+    .section-head{
+      display:flex; align-items:end; justify-content:space-between; gap:18px;
+      margin-bottom:18px;
+    }
+    .section-head h2{margin:0; font-size:1.8rem; letter-spacing:-.6px}
+    .section-head p{margin:6px 0 0; color:var(--muted)}
+    .grid{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+    }
+    .card{
+      padding:22px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+    }
+    .card:hover{transform:translateY(-4px); border-color:rgba(76,201,240,.25)}
+    .icon{
+      width:48px;height:48px;border-radius:14px; display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(76,201,240,.18), rgba(123,97,255,.18));
+      border:1px solid rgba(255,255,255,.08);
+      font-size:1.25rem;
+    }
+    .card h3{margin:12px 0 10px; font-size:1.12rem}
+    .card p{margin:0; color:var(--muted); line-height:1.72}
+    .pill-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+    .pill{
+      padding:8px 10px; border-radius:999px; font-size:.8rem;
+      background:rgba(255,255,255,.04); border:1px solid var(--line); color:#cad8e6;
+    }
+    .split{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+    .timeline{display:grid; gap:14px}
+    .step{
+      display:grid; grid-template-columns:54px 1fr; gap:14px;
+      padding:18px; border-radius:18px; background:rgba(255,255,255,.03); border:1px solid var(--line);
+    }
+    .step-num{
+      width:42px;height:42px;border-radius:12px; display:grid; place-items:center; font-weight:900;
+      background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#05111d;
+    }
+    .step h4{margin:2px 0 8px}
+    .step p{margin:0; color:var(--muted); line-height:1.72}
+    .cta{
+      display:grid; grid-template-columns:1.2fr .8fr; gap:18px; align-items:center;
+      padding:24px;
+    }
+    .cta h3{margin:0 0 10px; font-size:1.45rem}
+    .cta p{margin:0; color:var(--muted); line-height:1.7}
+    .footer{
+      text-align:center; color:var(--muted);
+      padding:38px 0 50px;
+    }
+    .small{font-size:.9rem; color:var(--muted)}
+    @media (max-width: 980px){
+      .hero-grid,.split,.grid,.cta{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">
+        <div class="brand-badge">A</div>
+        <div>
+          <strong>Amr Assi</strong>
+          <small>System Engineer Lab</small>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#skills">Skills</a>
+        <a href="#lab">Lab</a>
+        <a href="#projects">Projects</a>
+        <a href="#focus">Focus</a>
+        <a href="noc.html">NOC Portal</a>
+      </div>
+    </div>
+  </nav>
 
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div class="glass hero-card">
+        <div class="eyebrow"><span class="pulse"></span> Enterprise-Style Infrastructure Lab</div>
+        <h1><span class="gradient">System Administration, Identity, Security & Virtualization</span></h1>
+        <p class="lead">
+          I built and manage a production-style home lab focused on VMware ESXi, pfSense, Active Directory, PKI, IIS,
+          Veeam backup, Azure/Entra hybrid identity, Intune, least privilege, and enterprise administration practices.
+        </p>
+        <div class="hero-actions">
+          <a href="#lab" class="btn btn-primary">Explore My Lab</a>
+          <a href="#projects" class="btn">View Projects</a>
+          <a href="noc.html" class="btn">Open NOC Portal</a>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <div class="n">ESXi</div>
+            <div class="l">Hypervisor hosting the full environment</div>
+          </div>
+          <div class="stat">
+            <div class="n">4</div>
+            <div class="l">VLANs with segmented firewall policy</div>
+          </div>
+          <div class="stat">
+            <div class="n">Hybrid</div>
+            <div class="l">On-Prem AD + Azure/Entra + Intune</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="glass topology">
+        <h3>Lab Topology</h3>
+        <p>Designed to mirror a real small-business / enterprise-style environment with security boundaries, identity services, and centralized administration.</p>
+        <div class="nodes">
+          <div class="node">
+            <div><strong>VMware ESXi</strong><small>Hypervisor and virtualization layer for the entire lab</small></div>
+            <span class="tag">Hypervisor</span>
+          </div>
+          <div class="node">
+            <div><strong>pfSense</strong><small>Firewall, routing, VLAN segmentation</small></div>
+            <span class="tag">Network</span>
+          </div>
+          <div class="node">
+            <div><strong>DC01</strong><small>Active Directory, DNS, DHCP</small></div>
+            <span class="tag">Tier 0</span>
+          </div>
+          <div class="node">
+            <div><strong>Root CA</strong><small>Offline Root Certificate Authority</small></div>
+            <span class="tag">Offline</span>
+          </div>
+          <div class="node">
+            <div><strong>Issuing CA</strong><small>Enterprise subordinate CA</small></div>
+            <span class="tag">PKI</span>
+          </div>
+          <div class="node">
+            <div><strong>File Server</strong><small>Access model, permissions, shares</small></div>
+            <span class="tag">Storage</span>
+          </div>
+          <div class="node">
+            <div><strong>Veeam Server</strong><small>Backup and recovery operations</small></div>
+            <span class="tag">Backup</span>
+          </div>
+          <div class="node">
+            <div><strong>Web Server (IIS)</strong><small>HTTP/HTTPS hosting and PKI CRL publishing</small></div>
+            <span class="tag">IIS</span>
+          </div>
+          <div class="node">
+            <div><strong>Windows 10 Clients</strong><small>Hybrid join, policy testing, certificate enrollment</small></div>
+            <span class="tag">Tier 2</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="skills">
+      <div class="section-head">
+        <div>
+          <h2>Core Skills</h2>
+          <p>Built from hands-on work in an enterprise-style home lab.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="icon">🖥️</div>
+          <h3>Virtualization (VMware ESXi)</h3>
+          <p>Provisioned and managed virtual infrastructure on VMware ESXi to host domain services, security systems, backup, PKI, and management workloads.</p>
+          <div class="pill-row">
+            <span class="pill">ESXi</span><span class="pill">VMs</span><span class="pill">Virtual Networking</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">🧩</div>
+          <h3>Active Directory</h3>
+          <p>OU structure, GPO architecture, delegation, tiering concepts, service account organization, and least-privilege administration.</p>
+          <div class="pill-row">
+            <span class="pill">AD DS</span><span class="pill">GPO</span><span class="pill">Delegation</span><span class="pill">LAPS</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">🌐</div>
+          <h3>Networking & DNS</h3>
+          <p>VLAN segmentation, pfSense firewall policy, routing, DNS troubleshooting, domain connectivity validation, and infrastructure isolation.</p>
+          <div class="pill-row">
+            <span class="pill">VLAN</span><span class="pill">pfSense</span><span class="pill">DNS</span><span class="pill">Routing</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">🔐</div>
+          <h3>PKI & Certificates</h3>
+          <p>Offline Root CA, Issuing CA, HTTP CRL distribution, auto-enrollment, template publication, and trust chain validation.</p>
+          <div class="pill-row">
+            <span class="pill">AD CS</span><span class="pill">CRL</span><span class="pill">AIA/CDP</span><span class="pill">Auto-Enroll</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">☁️</div>
+          <h3>Hybrid Identity & Intune</h3>
+          <p>Azure/Entra integration, hybrid join, Intune MDM, compliance policy foundations, and Conditional Access.</p>
+          <div class="pill-row">
+            <span class="pill">Entra ID</span><span class="pill">Intune</span><span class="pill">Hybrid Join</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="icon">⚙️</div>
+          <h3>PowerShell & Troubleshooting</h3>
+          <p>Focused on networking, DNS, and PowerShell as core system administration skills for diagnostics, automation, and day-to-day operations.</p>
+          <div class="pill-row">
+            <span class="pill">PowerShell</span><span class="pill">Troubleshooting</span><span class="pill">Operations</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="lab">
+      <div class="section-head">
+        <div>
+          <h2>What I Built</h2>
+          <p>Practical infrastructure and security capabilities already implemented.</p>
+        </div>
+      </div>
+      <div class="split">
+        <div class="timeline">
+          <div class="step">
+            <div class="step-num">01</div>
+            <div>
+              <h4>Enterprise OU & GPO Structure</h4>
+              <p>Organized Active Directory into dedicated OUs for workstations, servers, users, groups, service accounts, and Tier 0 administration.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <div>
+              <h4>Windows LAPS Deployment</h4>
+              <p>Configured modern Windows LAPS to rotate local admin passwords automatically and secure access through delegated AD permissions.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <div>
+              <h4>Certificate Auto-Enrollment</h4>
+              <p>Published templates and configured machine certificate auto-enrollment for domain-joined clients.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">04</div>
+            <div>
+              <h4>Least-Privilege Backup Model</h4>
+              <p>Implemented a dedicated Veeam service account instead of overusing privileged administrative roles.</p>
+            </div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="step">
+            <div class="step-num">05</div>
+            <div>
+              <h4>VLAN & Firewall Segmentation</h4>
+              <p>Created multiple VLANs with custom pfSense firewall rules to reduce lateral movement and simulate enterprise boundaries.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">06</div>
+            <div>
+              <h4>IIS Web Publishing</h4>
+              <p>Configured a Web Server role with IIS to host infrastructure content and distribute PKI artifacts over HTTP.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">07</div>
+            <div>
+              <h4>Management Workstation Model</h4>
+              <p>Built a dedicated management workflow to administer infrastructure centrally instead of relying on constant server-side RDP sessions.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">08</div>
+            <div>
+              <h4>Hybrid Security Foundation</h4>
+              <p>Started cloud-side security controls using Intune compliance, Conditional Access, and Entra-based access design.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head">
+        <div>
+          <h2>Featured Projects</h2>
+          <p>Focused projects that map directly to real-world system administration work.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="icon">🛡️</div>
+          <h3>Two-Tier PKI Design</h3>
+          <p>Built an offline Root CA and an enterprise Issuing CA with HTTP CRL publishing and successful certificate chain validation.</p>
+        </article>
+        <article class="card">
+          <div class="icon">📦</div>
+          <h3>Veeam Hardening</h3>
+          <p>Configured backup operations using a least-privilege service account and validated core backup functionality for infrastructure services.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🧱</div>
+          <h3>AD Security Structure</h3>
+          <p>Reorganized OU design and GPO scope to better reflect enterprise-style role separation and management boundaries.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🌍</div>
+          <h3>Network Isolation</h3>
+          <p>Implemented firewall rules and segmented traffic across VLANs to simulate production-like network zoning.</p>
+        </article>
+        <article class="card">
+          <div class="icon">☁️</div>
+          <h3>Hybrid Identity Integration</h3>
+          <p>Connected on-prem AD with Entra/Intune to test hybrid device registration, MDM workflows, and cloud access enforcement.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🔑</div>
+          <h3>LAPS & Delegation</h3>
+          <p>Deployed password management and delegated access models for helpdesk-style operations without overusing Domain Admin rights.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="focus">
+      <div class="section-head">
+        <div>
+          <h2>Current Focus</h2>
+          <p>Where I am investing most of my lab time right now.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="icon">📡</div>
+          <h3>Monitoring</h3>
+          <p>Next step is building centralized monitoring and alerting to move from “it works” to “I can see what is happening.”</p>
+        </article>
+        <article class="card">
+          <div class="icon">🧠</div>
+          <h3>Networking, DNS & Kerberos Troubleshooting</h3>
+          <p>Learning to isolate problems quickly across routing, name resolution, authentication, and policy application.</p>
+        </article>
+        <article class="card">
+          <div class="icon">💻</div>
+          <h3>PowerShell Automation</h3>
+          <p>Using PowerShell to audit, troubleshoot, and automate repetitive administration tasks across the lab.</p>
+        </article>
+      </div>
+    </section>
+
+
+    <section id="operations-portal">
+      <div class="section-head">
+        <div>
+          <h2>Operations Portal</h2>
+          <p>Beyond the portfolio, this lab also includes a dedicated NOC-style portal with live status cards, alert center, event timeline, and clickable server inventory backed by JSON files generated from WEB01.</p>
+        </div>
+      </div>
+      <div class="split">
+        <div class="card">
+          <div class="icon">🖧</div>
+          <h3>What the NOC Portal Shows</h3>
+          <p>Live WEB01 status, alert classification, timeline events, and per-server operational details such as role, dependencies, exposure, and privilege model.</p>
+          <div class="pill-row">
+            <span class="pill">Live Status</span>
+            <span class="pill">Alerts</span>
+            <span class="pill">Timeline</span>
+            <span class="pill">Server Inventory</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>Why It Matters</h3>
+          <p>This turns the site from a static portfolio into stronger proof of operational thinking. It shows monitoring, least privilege, controlled publishing, and troubleshooting context without risking the actual IIS site.</p>
+          <div style="margin-top:18px;">
+            <a href="noc.html" class="btn btn-primary">Open NOC Portal</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="glass cta">
+        <div>
+          <h3>Built Like a Real Environment, Not Just a Demo</h3>
+          <p>
+            This lab is designed to practice real administration, security, troubleshooting, identity, and infrastructure workflows —
+            the same mindset used in production environments.
+          </p>
+        </div>
+        <div style="text-align:center">
+          <a href="#skills" class="btn btn-primary">Back to Top Skills</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <div>© 2026 Amr Assi — System Engineer Lab Portfolio</div>
+    <div class="small" style="margin-top:8px;">VMware ESXi • pfSense • Active Directory • PKI • Intune • Azure/Entra • IIS • Veeam</div>
+  </footer>
+</body>
+</html>
