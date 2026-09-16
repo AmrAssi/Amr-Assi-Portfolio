@@ -20,10 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
           persist-credentials: false
       - name: Parse scripts and test with stubbed commands
-        shell: ${{ matrix.shell }}
         run: ./tools/admin-scripts/tests/Test-AdminScripts.ps1
