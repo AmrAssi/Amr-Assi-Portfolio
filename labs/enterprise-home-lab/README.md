@@ -28,7 +28,8 @@ flowchart TD
     FW --> Clients["Windows client segment"]
     FW --> Servers["Server segment"]
     Servers --> AD["AD DS / DNS / DHCP"]
-    Servers --> PKI["Root CA and Issuing CA"]
+    Servers --> PKI["Issuing CA"]
+    Root["Offline Root CA"] -. "Signs issuing CA certificate" .-> PKI
     Servers --> Web["IIS / HTTPS"]
     Servers --> Backup["Veeam backup role"]
     AD --> Clients

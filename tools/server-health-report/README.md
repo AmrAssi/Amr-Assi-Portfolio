@@ -2,7 +2,7 @@
 
 A PowerShell project by Amr Assi for collecting a small, readable snapshot of Windows server health.
 
-**Validation:** automated parser, behavioral, and local Windows collection checks are included for Windows PowerShell 5.1 and PowerShell 7. See the [validation record](docs/validation.md) for actual results. Remote lab validation is still pending.
+**Validated on Windows Server 2025 with Windows PowerShell 5.1 and PowerShell 7:** parser checks, behavioral tests, and real local CIM collection passed. [See the results and limits](docs/validation.md). Remote lab validation is pending.
 
 ## Scope
 - Physical-memory use from the Windows operating system.
@@ -45,16 +45,11 @@ A failed query is recorded as Unknown, not as a healthy result or proof that a s
 
 The script emits a report object. Health findings are represented in the report, not by dedicated process exit codes. It is a snapshot, not continuous monitoring, and does not replace Zabbix or backup verification.
 
-## Validation still required
-1. Parse the script using the PowerShell parser and run it on a lab machine.
-2. Compare memory, disk capacity, and service state with Windows management tools.
-3. Request a nonexistent service and verify that its result is Critical.
-4. Query an unreachable or unauthorized test host and verify Unknown results.
-5. Test both sides of each threshold and confirm the comparison before rounding.
-6. Open the HTML report and verify it handles special characters in text.
-7. Test Windows PowerShell 5.1 and PowerShell 7 separately before claiming both are validated.
+## Validation
 
-Record OS, PowerShell version, date, command, and observed result in docs/validation.md.
+Automated checks run in both supported PowerShell editions on a Windows runner. They cover errors and threshold boundaries as well as a real local collection run. The [validation record](docs/validation.md) links to the observed results.
+
+Before using this with lab servers, verify remote CIM access and compare the report with Windows management tools. No customer or home-lab server was contacted by the automated tests.
 
 ## References
 - [Microsoft: Get-CimInstance](https://learn.microsoft.com/en-us/powershell/module/cimcmdlets/get-ciminstance)
