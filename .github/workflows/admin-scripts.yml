@@ -1,0 +1,29 @@
+name: Administration script checks
+on:
+  push:
+    paths:
+      - 'tools/admin-scripts/**'
+      - '.github/workflows/admin-scripts.yml'
+  pull_request:
+    paths:
+      - 'tools/admin-scripts/**'
+      - '.github/workflows/admin-scripts.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: Mocked administration checks / ${{ matrix.shell }}
+    runs-on: windows-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Parse scripts and test with stubbed commands
+        shell: ${{ matrix.shell }}
+        run: ./tools/admin-scripts/tests/Test-AdminScripts.ps1

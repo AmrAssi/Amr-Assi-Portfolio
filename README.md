@@ -11,6 +11,7 @@ Practical Windows infrastructure, operations, troubleshooting, and PowerShell wo
 | Project | Focus | Start here |
 | --- | --- | --- |
 | **Enterprise Home Lab** | Windows infrastructure, identity, network segmentation, PKI, and recovery. | [Architecture & documentation](labs/enterprise-home-lab/) |
+| **Administration Scripts** | RDS sessions, AD onboarding, and profile-disk investigation. | [Scripts & Hebrew explanations](tools/admin-scripts/) |
 | **Server Health Report** | PowerShell, CIM, error handling, thresholds, and readable reports. | [Source & usage](tools/server-health-report/) |
 | **Recovery case study** | Recovering a business application file with Zerto after endpoint rollback was insufficient. | [Incident walkthrough](case-studies/file-recovery-after-endpoint-quarantine.md) |
 
@@ -51,7 +52,8 @@ During a previous Windows 11 deployment project, I personally prepared **300+ co
 index.html                       Existing portfolio website
 assets/diagrams/                 Original infrastructure illustrations
 labs/enterprise-home-lab/         Environment, evidence, and runbooks
-tools/server-health-report/      PowerShell source, tests, and validation
+tools/server-health-report/      Health reporting and validation
+tools/admin-scripts/             RDS and Active Directory operations
 case-studies/                    Anonymized professional experience
 .github/workflows/               Automated Windows checks
 ```
