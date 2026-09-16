@@ -1,5 +1,7 @@
 # Windows Server Health Report
 
+![Read Windows CIM data, evaluate checks, and generate HTML and JSON reports](../../assets/diagrams/server-health-flow.svg)
+
 A PowerShell project by Amr Assi for collecting a small, readable snapshot of Windows server health.
 
 **Validated on Windows Server 2025 with Windows PowerShell 5.1 and PowerShell 7:** parser checks, behavioral tests, and real local CIM collection passed. [See the results and limits](docs/validation.md). Remote lab validation is pending.

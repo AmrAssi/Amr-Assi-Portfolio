@@ -20,6 +20,9 @@ The environment summary below reflects Amr's described lab and its existing port
 | Recovery | Veeam Backup & Replication | Practice backup and recovery validation. |
 
 ## Logical architecture
+
+![Home lab roles and dependencies](../../assets/diagrams/home-lab.svg)
+
 This diagram summarizes the documented roles and dependencies. It is not a port-level or current IP-address inventory.
 
 ```mermaid

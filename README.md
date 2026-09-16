@@ -1,32 +1,61 @@
-# Amr Assi · Systems & Infrastructure Portfolio
+![Systems and Infrastructure — Amr Assi](https://raw.githubusercontent.com/AmrAssi/AmrAssi/main/assets/headers/portfolio.svg)
 
-Practical Windows infrastructure, troubleshooting, and PowerShell work.
+# Systems & Infrastructure Portfolio
+
+Practical Windows infrastructure, operations, troubleshooting, and PowerShell work by **Amr Assi**.
 
 [Live portfolio](https://amr-assi-portfolio.pages.dev/) · [GitHub profile](https://github.com/AmrAssi) · [LinkedIn](https://www.linkedin.com/in/amr-assi-b13451232/)
 
-## Start here
+## Explore the work
 
-| Project | Focus | Evidence |
+| Project | Focus | Start here |
 | --- | --- | --- |
-| [Enterprise Home Lab](labs/enterprise-home-lab/) | AD DS, DNS, DHCP, Group Policy, ESXi, pfSense, PKI, IIS, Entra ID, Intune, Veeam | Environment summary, architecture, and links to the existing gallery. |
-| [Windows Server Health Report](tools/server-health-report/) | PowerShell, CIM, service checks, thresholds, HTML and JSON reports | Source code, automated tests, and a [validation record](tools/server-health-report/docs/validation.md). |
-| [Recovery case study](case-studies/file-recovery-after-endpoint-quarantine.md) | Endpoint security and historical file recovery with Zerto | An anonymized account of a real support incident. |
-| [Troubleshooting runbooks](labs/enterprise-home-lab/docs/troubleshooting/) | Group Policy, DNS, and recovery verification | Prepared lab procedures with explicit acceptance criteria. |
+| **Enterprise Home Lab** | Windows infrastructure, identity, network segmentation, PKI, and recovery. | [Architecture & documentation](labs/enterprise-home-lab/) |
+| **Server Health Report** | PowerShell, CIM, error handling, thresholds, and readable reports. | [Source & usage](tools/server-health-report/) |
+| **Recovery case study** | Recovering a business application file with Zerto after endpoint rollback was insufficient. | [Incident walkthrough](case-studies/file-recovery-after-endpoint-quarantine.md) |
+
+## Enterprise Home Lab
+
+![Logical home-lab architecture](assets/diagrams/home-lab.svg)
+
+More than **300 hours** building and troubleshooting an ESXi lab spanning AD DS, DNS, DHCP, Group Policy, pfSense, two-tier PKI, IIS, Entra ID, Intune, and Veeam.
+
+[Read the lab documentation](labs/enterprise-home-lab/) · [Existing evidence gallery](https://amr-assi-portfolio.pages.dev/#gallery)
+
+## PowerShell project
+
+![Read Windows data, evaluate checks, write local reports](assets/diagrams/server-health-flow.svg)
+
+The [Windows Server Health Report](tools/server-health-report/) collects memory, disk, and selected service checks. Collection failures remain **Unknown** instead of appearing healthy. Each run produces local HTML and JSON reports.
+
+**Verified:** parser, behavioral, and real local Windows collection tests passed in Windows PowerShell 5.1 and PowerShell 7. [Validation details](tools/server-health-report/docs/validation.md)
+
+## Operations and recovery
+
+- [Real incident: file recovery after endpoint quarantine](case-studies/file-recovery-after-endpoint-quarantine.md)
+- [Group Policy investigation](labs/enterprise-home-lab/docs/troubleshooting/gpo-not-applied.md)
+- [DNS investigation](labs/enterprise-home-lab/docs/troubleshooting/dns-resolution.md)
+- [File-recovery validation](labs/enterprise-home-lab/docs/troubleshooting/file-recovery.md)
+
+The incident is an anonymized account of professional work. The three lab runbooks are prepared exercises with acceptance criteria; their execution results are not yet recorded.
 
 ## Professional context
 
-I work as an **IT Support Specialist** in a multi-client environment, with hands-on responsibilities across Windows servers, Microsoft 365, identity services, virtualization, backup recovery, and monitoring.
+I support multi-client Windows and Microsoft 365 environments, including Active Directory, VMware vCenter/ESXi operations, file recovery, endpoint security, and Zabbix monitoring.
 
-A previous Windows 11 deployment project included preparing **more than 300 computers for 150 branches**: imaging, domain join, business applications, IP/DNS settings, printers, peripherals, and final functional checks.
+During a previous Windows 11 deployment project, I personally prepared **300+ computers for 150 branches**, including imaging, domain join, applications, IP/DNS settings, printers, peripherals, and functional checks.
 
-## Repository guide
+## Repository map
 
 ```text
-index.html                          Existing portfolio website
-labs/enterprise-home-lab/            Architecture and troubleshooting runbooks
-tools/server-health-report/          PowerShell tool, usage, tests, and validation
-case-studies/                       Anonymized professional experience
-.github/workflows/                  Automated Windows checks
+index.html                       Existing portfolio website
+assets/diagrams/                 Original infrastructure illustrations
+labs/enterprise-home-lab/         Environment, evidence, and runbooks
+tools/server-health-report/      PowerShell source, tests, and validation
+case-studies/                    Anonymized professional experience
+.github/workflows/               Automated Windows checks
 ```
 
-The Home Lab documentation describes the existing environment. Runbooks without recorded outcomes are identified as exercises. Automated script tests are distinct from testing against real lab servers.
+## Related learning resources
+
+[SysAdmin Learning Lab](https://github.com/AmrAssi/system) · [SysAdmin Prep](https://github.com/AmrAssi/sysadmin-prep)
