@@ -1,0 +1,37 @@
+name: Server health report checks
+
+on:
+  push:
+    paths:
+      - 'tools/server-health-report/**'
+      - '.github/workflows/server-health-report.yml'
+  pull_request:
+    paths:
+      - 'tools/server-health-report/**'
+      - '.github/workflows/server-health-report.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Windows / ${{ matrix.shell }}
+    runs-on: windows-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Parser and behavioral tests
+        run: ./tools/server-health-report/tests/Test-ServerHealthReport.ps1
+      - name: Real local Windows collection
+        run: ./tools/server-health-report/tests/Test-LocalCollection.ps1
