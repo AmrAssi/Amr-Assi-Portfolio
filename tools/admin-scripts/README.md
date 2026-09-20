@@ -76,6 +76,8 @@ Viewing is the default. `-Control` requests control. Confirm the correct session
 
 ## Validation
 
+Verified in [GitHub Actions on 16 September 2026](https://github.com/AmrAssi/Amr-Assi-Portfolio/actions/runs/35148954756): all checks passed on Windows PowerShell **5.1.26100.33296** and PowerShell **7.6.5**, at commit `04f8911a4240afd984d73fc64d089fc4f43cee6c`.
+
 `tests/Test-AdminScripts.ps1` checks syntax and behavior with **stubbed directory, remoting, and process calls**. It does not contact an AD domain, RDS host, or customer server. A successful stubbed test is not a production-validation claim.
 
 ```powershell
